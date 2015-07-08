@@ -51,6 +51,7 @@ void sl2_copy(sl2_t dst, sl2_t src) {
   dst[1][1] = src[1][1];
 }
 
+#ifdef __AVX2__
 static inline
 void sl2_mul_bit_left_x2(gf2p127x2_t *b00b01, gf2p127x2_t *b10b11, gf2p127_t bits) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
@@ -63,6 +64,7 @@ void sl2_mul_bit_left_x2(gf2p127x2_t *b00b01, gf2p127x2_t *b10b11, gf2p127_t bit
   *b10b11 = maskedadd;
   *b00b01 = muladd;
 }
+#endif
 
 static inline
 void sl2_mul_bit_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t *b11, gf2p127_t bits) {
@@ -76,6 +78,7 @@ void sl2_mul_bit_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t 
   *b01 = gf2p127_add(b11_, gf2p127_mul_10(*b11));
 }
 
+#ifdef __AVX2__
 static inline
 void sl2_mul_bits_left_x2(gf2p127x2_t *b00b01, gf2p127x2_t *b10b11, unsigned char byte) {
   sl2_mul_bit_left_x2(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 0) & 1]));
@@ -87,6 +90,7 @@ void sl2_mul_bits_left_x2(gf2p127x2_t *b00b01, gf2p127x2_t *b10b11, unsigned cha
   sl2_mul_bit_left_x2(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 6) & 1]));
   sl2_mul_bit_left_x2(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 7) & 1]));
 }
+#endif
 
 static inline
 void sl2_mul_bits_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t *b11, unsigned char byte) {
@@ -130,6 +134,7 @@ void sl2_mul_buf_left(sl2_t b, unsigned char *buf, size_t n) {
 }
 #endif
 
+#ifdef __AVX2__
 static inline
 void sl2_mul_bit_right_x2(gf2p127x2_t *a00a10, gf2p127x2_t *a01a11, gf2p127_t bits) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
@@ -142,6 +147,7 @@ void sl2_mul_bit_right_x2(gf2p127x2_t *a00a10, gf2p127x2_t *a01a11, gf2p127_t bi
   *a01a11 = maskedadd;
   *a00a10 = muladd;
 }
+#endif
 
 static inline
 void sl2_mul_bit_right(gf2p127_t *a00, gf2p127_t *a01, gf2p127_t *a10, gf2p127_t *a11, gf2p127_t bits) {
@@ -155,6 +161,7 @@ void sl2_mul_bit_right(gf2p127_t *a00, gf2p127_t *a01, gf2p127_t *a10, gf2p127_t
   *a11 = gf2p127_add(a10_, _mm_and_si128(*a10, bits));
 }
 
+#ifdef __AVX2__
 static inline
 void sl2_mul_bits_right_x2(gf2p127x2_t *a00a01, gf2p127x2_t *a10a11, unsigned char byte) {
   sl2_mul_bit_right_x2(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 7) & 1]));
@@ -166,6 +173,7 @@ void sl2_mul_bits_right_x2(gf2p127x2_t *a00a01, gf2p127x2_t *a10a11, unsigned ch
   sl2_mul_bit_right_x2(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 1) & 1]));
   sl2_mul_bit_right_x2(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 0) & 1]));
 }
+#endif
 
 static inline
 void sl2_mul_bits_right(gf2p127_t *a00, gf2p127_t *a01, gf2p127_t *a10, gf2p127_t *a11, unsigned char byte) {

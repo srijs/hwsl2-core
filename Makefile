@@ -3,9 +3,9 @@ CFLAGS = -Wall -mavx2 -msse2 -msse4.1 -mpclmul -O3
 
 .PHONY: clean test bench
 
-HEADERS = $(wildcard src/*.h)
-TESTS = $(wildcard src/tests/*.c)
-BENCHMARKS = $(wildcard src/bench/*.c)
+HEADERS = $(wildcard *.h)
+TESTS = $(wildcard tests/*.c)
+BENCHMARKS = $(wildcard bench/*.c)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
