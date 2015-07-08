@@ -1,4 +1,1 @@
-language: haskell
-ghc: 7.8
-script:
-  - cabal configure --enable-tests -f-avx2 && cabal build && cabal test
+language: c
